@@ -112,13 +112,15 @@ describe('Bot when it starts listening', () => {
 
   it('should post a message after triggering the action', async () => {
     // Arrange
+    bot.messengerBot.getChannelById = async (channelId) => ({ id: channelId, name: 'channel' });
     let aMessageWasPosted = false;
-    bot.messengerBot.postMessageToChannel = async (_channelName, _response) => {
+    bot.messengerBot.postMessageToChannel = async (channelId, _message) => {
+      expect(channelId).to.equal('channelId');
       aMessageWasPosted = true;
     };
     
     // Act
-    await bot.messengerBot.message({ type: 'message', text: 'open' });
+    await bot.messengerBot.message({ type: 'message', text: 'open', channel: 'channelId' });
 
     // Assert
     expect(aMessageWasPosted).to.be.true;

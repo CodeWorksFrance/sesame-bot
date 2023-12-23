@@ -1,10 +1,18 @@
-import Slackbot from 'slackbot';
+import { RTMClient } from '@slack/rtm-api';
+import { WebClient } from '@slack/web-api';
 import environment from './environment.js';
 
-const slackBot = () => new Slackbot({
-  token: environment.slackToken,
-  name: 'Sesame'
-});
+const slackBot = () => {
+  const rTMClient = new RTMClient(environment.slackToken);
+  const webClient = new WebClient(environment.slackToken);
+  return {
+    on: rTMClient.on,
+    getChannelById: webClient.users.identity,
+    getUserById: webClient.conversations.info,
+    postMessageToChannel: (channelName, message) => rTMClient.sendMessage(message, channelName),
+    start: rTMClient.start
+  };
+};
 
 export default class Bot {
   constructor(handler, messengerBot = slackBot()) {
@@ -13,22 +21,34 @@ export default class Bot {
   }
 
   startListening() {
-    this.messengerBot.on('message', async message => {
-      const type = message.type;
+    this.handleMessageEvent();
+    
+    this.messengerBot.on('error', (error) => {
+      console.error('Error: %s', error);
+    });
+
+    (async () => {
+      await this.messengerBot.start();
+    })();
+  }
+
+  handleMessageEvent() {
+    this.messengerBot.on('message', async event => {
+      const type = event.type;
 
       if (type !== 'message') {
         return false;
       }
 
-      const channel = await this.messengerBot.getChannelById(message.channel);
-      const user = await this.messengerBot.getUserById(message.user);
+      const channel = await this.messengerBot.getChannelById(event.channel);
+      const user = await this.messengerBot.getUserById(event.user);
       
       if (!user || !user.name || !channel) {
         return false;
       }
 
-      const time = message.ts;
-      const text = message.text;
+      const time = event.ts;
+      const text = event.text;
       console.log('Received: %s %s @%s %s "%s"', type, (channel.is_channel ? '#' : '') + channel.name, user.name, time, text);
       
       if (!['open', 'ouvre', 'sesame'].some((item) => text.toLowerCase().indexOf(item) > -1)) {
@@ -38,12 +58,8 @@ export default class Bot {
       this.handler.triggerAction();
 
       const response = environment.botResponseMessageTemplate.replace('${userName}', user.name);
-      await this.messengerBot.postMessageToChannel(channel.name, response)
+      await this.messengerBot.postMessageToChannel(channel.id, response)
       console.log('@%s responded with "%s"', this.messengerBot.self.name, response);
-    });
-    
-    this.messengerBot.on('error', (error) => {
-      console.error('Error: %s', error);
     });
   }
 };
