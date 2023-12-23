@@ -19,6 +19,7 @@
   "dependencies": {
     "@slack/rtm-api": "^6.2.0",
     "debug": "^4.3.4",
-    "onoff": "^6.0.3"
+    "onoff": "^6.0.3",
+    "slackbot": "^0.0.2"
   }
 }
