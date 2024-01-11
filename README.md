@@ -2,7 +2,6 @@
 
 Ouvrir une porte magnétique avec un raspberry pi et slack api
 
-
 - Environment variables
 ```sh
 SLACK_APP_TOKEN = 'xapp-xxxxxxxxxxxxxxxxxx'
