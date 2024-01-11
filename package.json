@@ -1,0 +1,25 @@
+{
+  "name": "sesame-bot",
+  "version": "1.0.0",
+  "description": "Ouvrir une porte magnétique avec un raspberry pi et slack api",
+  "license": "Apache-2.0",
+  "type": "commonjs",
+  "baseUrl": "./src",
+  "scripts": {
+    "test": "mocha --recursive",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.11",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
+    "nodemon": "^3.0.2"
+  },
+  "dependencies": {
+    "@slack/bolt": "^3.17.0",
+    "debug": "^4.3.4",
+    "dotenv": "^16.3.1",
+    "onoff": "^6.0.3"
+  }
+}
