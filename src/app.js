@@ -10,5 +10,6 @@ const SesameBot = (messengerBot) => {
   }
 }
 
-const sesameBot = SesameBot(MessengerBot(Switch()));
+const appStart = Date.now();
+const sesameBot = SesameBot(MessengerBot(Switch(), appStart));
 sesameBot.startListening();
