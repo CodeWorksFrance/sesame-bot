@@ -13,18 +13,22 @@ const SlackBot = (handler, appStartTime) => {
         slackEvent.event('message', async ({ event, say }) => {
           const user = event.user;
           const message = event.text;
-          console.log(event);
           const messageTime = new Date(event.ts * 1000);
-          console.log("date :" + messageTime);
+          log("New message received");
           
           if (!['open', 'ouvre', 'sesame'].some((item) => message.toLowerCase().indexOf(item) > -1)) {
+            log("IGNORED : message does not contain keyword to open the door.");
             return false;
           }
 
-          if (appStartTime >= messageTime) return false;
+          if (appStartTime >= messageTime) {
+            log("IGNORED : message was sent before app was started.");
+            return false;
+          } 
           
           say(`J\'ouvre de ce pas <@${user}>!.`);
           handler.triggerAction();
+          log("ACCEPTED : door opened.");
         });
       },
       start: async () => {
