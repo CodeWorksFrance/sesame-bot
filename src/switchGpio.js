@@ -3,6 +3,7 @@ const { Gpio } = require('onoff');
 
 const SwitchGpio = () => {
     const relay = new Gpio(environment.relayGpioPort, 'out');
+    console.log("channel ID" + environment.botChannelId)
     const close = () => {
       relay.writeSync(Gpio.HIGH);
     };
@@ -16,7 +17,6 @@ const SwitchGpio = () => {
           relay.writeSync(Gpio.LOW);
           setTimeout(close, (environment.doorTimeout));
         }
-  
       }
     }
   }
