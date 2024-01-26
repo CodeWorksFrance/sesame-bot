@@ -14,7 +14,7 @@ const SlackBot = (handler, appStartTime) => {
           const user = event.user;
           const message = event.text;
           const messageTime = new Date(event.ts * 1000);
-          console.log("New message received");
+          console.log("New message received at: " + messageTime);
           
           if (!['open', 'ouvre', 'sesame'].some((item) => message.toLowerCase().indexOf(item) > -1)) {
             console.log("IGNORED : message does not contain keyword to open the door.");
